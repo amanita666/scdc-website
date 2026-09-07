@@ -91,11 +91,13 @@ a {
   font-size: 10px;
   font-weight: bold;
 }
-.lang button {
+.lang button,
+.lang a {
   padding: 0;
   border: 0;
   color: #777;
   background: none;
+  text-decoration: none;
 }
 .menu-toggle {
   display: none;
