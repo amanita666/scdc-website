@@ -26,6 +26,7 @@ function validate(data) {
   const contact = String(data.contact || '').trim();
   const email = String(data.email || '').trim().toLowerCase();
   const notes = String(data.notes || '').trim();
+  const privacyAccepted = data.privacyAccepted === 'yes';
   const language = ['pt', 'en', 'it', 'fr', 'es'].includes(data.language) ? data.language : 'pt';
   const requestId = /^[a-zA-Z0-9-]{10,80}$/.test(String(data.requestId || '')) ? String(data.requestId) : crypto.randomUUID();
   const dateMatch = /^\d{4}-\d{2}-\d{2}$/.test(date);
@@ -45,6 +46,7 @@ function validate(data) {
   if (contact.length < 5 || contact.length > 40) return { error: 'Indique um contacto telefónico válido.' };
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Indique um email válido.' };
   if (notes.length > 1000) return { error: 'As notas são demasiado longas.' };
+  if (!privacyAccepted) return { error: 'Aceite a Política de Privacidade para continuar.' };
   return { date, time, people, name, contact, email, notes, language, requestId };
 }
 
@@ -82,7 +84,8 @@ async function handleReservation(request, env) {
       'Indique o seu nome.': 'Enter your name.',
       'Indique um contacto telefónico válido.': 'Enter a valid phone number.',
       'Indique um email válido.': 'Enter a valid email address.',
-      'As notas são demasiado longas.': 'The notes are too long.'
+      'As notas são demasiado longas.': 'The notes are too long.',
+      'Aceite a Política de Privacidade para continuar.': 'Accept the Privacy Policy to continue.'
     };
     return json({ message: raw.language === 'en' ? (errors[data.error] || data.error) : data.error }, 400);
   }
